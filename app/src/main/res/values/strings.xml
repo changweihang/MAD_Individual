@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Individual Assignment</string>
+    <string name="ascending_order">Ascending Order</string>
+    <string name="descending_order">Descending Order</string>
+    <string name="_10_5_15">[10, 5, 15]</string>
+    <string name="chosen">Chosen:</string>
+    <string name="option_2">Option 2</string>
+    <string name="option_1">Option 1</string>
+    <string name="target_15">Target: 15</string>
+    <string name="_10_20">10 ? 20</string>
+    <string name="compare_numbers">Comparing numbers</string>
+    <string name="order_numbers">Ordering numbers</string>
+    <string name="compose_numbers">Composing numbers</string>
+    <string name="exit">Exit</string>
+    <string name="icon_for_ordering_numbers">Icon for ordering numbers</string>
+    <string name="icon_for_comparing_numbers">Icon for comparing numbers</string>
+    <string name="icon_for_composing_numbers">Icon for composing numbers</string>
+    <string name="icon_for_exit_application">Icon for exit application</string>
+    <string name="children_mathematics_learning_application">Children Mathematics Learning Application</string>
+    <string name="app_logo">\n</string>
+    <string name="greater_than">Greater than</string>
+    <string name="lesser_than">Lesser than</string>
+    <string name="question">Question:</string>
+    <string name="sample_answer_1_2_3">Sample Answer: 1, 2, 3</string>
+    <string name="enter_numbers_in_ascending_order">Enter numbers in ascending order</string>
+    <string name="enter_numbers_in_descending_order">Enter numbers in descending order</string>
+    <string name="submit">Submit</string>
+    <string name="select_two_numbers_that_compose_to_the_target">Select two numbers that compose to the target.</string>
+    <string name="target_number">Target Number:</string>
+</resources>
