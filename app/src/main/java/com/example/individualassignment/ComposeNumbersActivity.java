@@ -25,7 +25,7 @@ public class ComposeNumbersActivity extends AppCompatActivity {
     private int[] options;
     private ArrayList<Button> optionButtons = new ArrayList<>();
     private ArrayList<Button> selectedButtons = new ArrayList<>();
-    private MediaPlayer mediaPlayer;  // ✅ for playing sound
+    private MediaPlayer mediaPlayer;  // for playing sound
     private int streakCount = 0;  // Variable to track the current streak
 
     // SharedPreferences specific to ComposeNumbersActivity
@@ -151,7 +151,7 @@ public class ComposeNumbersActivity extends AppCompatActivity {
         editor.apply();  // Apply changes
     }
 
-    // ✅ Plays correct or wrong sound
+    // Plays correct or wrong sound
     private void playSound(boolean isCorrect) {
         if (mediaPlayer != null) {
             mediaPlayer.release();
@@ -180,7 +180,7 @@ public class ComposeNumbersActivity extends AppCompatActivity {
         alert.show();
     }
 
-    // ✅ Clean up mediaPlayer
+    // Clean up mediaPlayer
     @Override
     protected void onDestroy() {
         if (mediaPlayer != null) {
