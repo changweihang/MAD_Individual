@@ -1,6 +1,8 @@
 package com.example.individualassignment;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,18 +15,28 @@ import java.util.Random;
 import java.util.Set;
 
 public class OrderNumbersActivity extends AppCompatActivity {
-    private TextView txtGeneratedNumbers;
+    private TextView txtGeneratedNumbers, txtStreak;
     private EditText edtAscending1, edtAscending2, edtAscending3;
     private EditText edtDescending1, edtDescending2, edtDescending3;
     private Button btnSubmit;
     private int[] numbers;
+    private int streak = 0;  // Track streak
+    private MediaPlayer correctSound;
+    private MediaPlayer wrongSound;
+
+    // SharedPreferences
+    private SharedPreferences sharedPreferences;
+    private static final String PREF_NAME = "OrderNumbersStreakPreferences";
+    private static final String STREAK_KEY = "streak";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_numbers);
 
+        // Initialize Views
         txtGeneratedNumbers = findViewById(R.id.txtGeneratedNumbers);
+        txtStreak = findViewById(R.id.txtStreak);  // Streak TextView
         edtAscending1 = findViewById(R.id.edtAscending1);
         edtAscending2 = findViewById(R.id.edtAscending2);
         edtAscending3 = findViewById(R.id.edtAscending3);
@@ -33,21 +45,30 @@ public class OrderNumbersActivity extends AppCompatActivity {
         edtDescending3 = findViewById(R.id.edtDescending3);
         btnSubmit = findViewById(R.id.btnSubmit);
 
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        streak = sharedPreferences.getInt(STREAK_KEY, 0);  // Retrieve the streak value
+
+        // Display the saved streak
+        txtStreak.setText("Streak: " + streak);
+
         generateNumbers();
+
+        // Initialize the MediaPlayer for correct and wrong sounds
+        correctSound = MediaPlayer.create(this, R.raw.correct);
+        wrongSound = MediaPlayer.create(this, R.raw.wrong);
 
         btnSubmit.setOnClickListener(v -> checkAnswer());
     }
 
     private void generateNumbers() {
         Random random = new Random();
-        Set<Integer> uniqueNumbers = new HashSet<>(); // Using a Set to ensure uniqueness
+        Set<Integer> uniqueNumbers = new HashSet<>();
 
-        // Keep generating random numbers until we have 3 unique numbers
         while (uniqueNumbers.size() < 3) {
             uniqueNumbers.add(random.nextInt(1000)); // Numbers between 0 and 999
         }
 
-        // Convert the Set back to an array
         numbers = new int[3];
         int index = 0;
         for (Integer num : uniqueNumbers) {
@@ -58,7 +79,6 @@ public class OrderNumbersActivity extends AppCompatActivity {
     }
 
     private void checkAnswer() {
-        // Check if any EditText is empty
         if (edtAscending1.getText().toString().trim().isEmpty() || edtAscending2.getText().toString().trim().isEmpty() ||
                 edtAscending3.getText().toString().trim().isEmpty() || edtDescending1.getText().toString().trim().isEmpty() ||
                 edtDescending2.getText().toString().trim().isEmpty() || edtDescending3.getText().toString().trim().isEmpty()) {
@@ -67,7 +87,6 @@ public class OrderNumbersActivity extends AppCompatActivity {
         }
 
         try {
-            // Get user's ascending and descending order input after trimming spaces
             int[] userAscending = {
                     Integer.parseInt(edtAscending1.getText().toString().trim()),
                     Integer.parseInt(edtAscending2.getText().toString().trim()),
@@ -80,7 +99,6 @@ public class OrderNumbersActivity extends AppCompatActivity {
                     Integer.parseInt(edtDescending3.getText().toString().trim())
             };
 
-            // Sort numbers in ascending and descending order
             int[] correctAscending = numbers.clone();
             Arrays.sort(correctAscending);
             int[] correctDescending = correctAscending.clone();
@@ -90,12 +108,24 @@ public class OrderNumbersActivity extends AppCompatActivity {
                 correctDescending[correctDescending.length - 1 - i] = temp;
             }
 
-            // Check if user's input matches the correct answers
             if (Arrays.equals(userAscending, correctAscending) && Arrays.equals(userDescending, correctDescending)) {
+                correctSound.start();
+                streak++;  // Increment streak on correct answer
                 showDialog("Correct! Well done.", true);
             } else {
+                wrongSound.start();
+                streak = 0;  // Reset streak on wrong answer
                 showDialog("Wrong! Try again.", false);
             }
+
+            // Update the streak display
+            txtStreak.setText("Streak: " + streak);
+
+            // Save the streak value to SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(STREAK_KEY, streak);
+            editor.apply();
+
         } catch (Exception e) {
             showDialog("Invalid input! Please enter numbers only.", false);
         }
@@ -104,20 +134,29 @@ public class OrderNumbersActivity extends AppCompatActivity {
     private void showDialog(String message, boolean isCorrect) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (isCorrect) {
-                            generateNumbers();
-                            edtAscending1.setText("");
-                            edtAscending2.setText("");
-                            edtAscending3.setText("");
-                            edtDescending1.setText("");
-                            edtDescending2.setText("");
-                            edtDescending3.setText("");
-                        }
+                .setPositiveButton("OK", (dialog, id) -> {
+                    if (isCorrect) {
+                        generateNumbers();
+                        edtAscending1.setText("");
+                        edtAscending2.setText("");
+                        edtAscending3.setText("");
+                        edtDescending1.setText("");
+                        edtDescending2.setText("");
+                        edtDescending3.setText("");
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (correctSound != null) {
+            correctSound.release();
+        }
+        if (wrongSound != null) {
+            wrongSound.release();
+        }
     }
 }

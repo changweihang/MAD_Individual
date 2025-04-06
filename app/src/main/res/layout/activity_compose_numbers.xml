@@ -61,6 +61,17 @@
             android:textSize="18sp"
             android:paddingBottom="16dp" />
 
+        <!-- Display the streak count -->
+        <TextView
+            android:id="@+id/txtStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Streak: 0"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
         <!-- GridLayout to hold option buttons dynamically (3 buttons) -->
         <GridLayout
             android:id="@+id/gridOptions"
